@@ -1,2 +1,22 @@
-# Real-Time-Traffic-Violation-Detection
-AI-powered traffic violation detection system using YOLOv8 for helmet and seatbelt detection with real-time processing and evidence generation.
+# 🚦 Real-Time Traffic Violation Detection System
+
+An AI-powered system that detects **helmet and seatbelt violations** using YOLOv8, enabling automated traffic monitoring and evidence generation.
+
+---
+
+## 🔥 Key Features
+- Real-time detection using YOLOv8
+- Helmet violation detection
+- Seatbelt violation detection
+- Evidence capture system
+- Web-based interface for monitoring
+
+---
+
+## 🛠 Tech Stack
+- Python
+- YOLOv8 (Ultralytics)
+- OpenCV
+- Flask
+
+---
