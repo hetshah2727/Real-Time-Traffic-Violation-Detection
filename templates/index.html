@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI-TraQ Control Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/ui.css" />
+  </head>
+  <body>
+    <div class="page-bg"></div>
+    <main class="layout">
+      <header class="hero">
+        <p class="hero-tag">Traffic Intelligence System</p>
+        <h1>AI-TraQ Control Room</h1>
+        <p class="hero-sub">Live helmet compliance, challan generation, and evidence archive in one place.</p>
+      </header>
+
+      <section class="panel controls">
+        <div class="panel-title">Session Controls</div>
+        <div class="control-row">
+          <label for="cameraIndex">Camera Index</label>
+          <input id="cameraIndex" type="number" min="0" value="0" />
+        </div>
+        <div class="actions">
+          <button id="startBtn" class="btn btn-primary">Start Detection</button>
+          <button id="stopBtn" class="btn btn-ghost">Stop Detection</button>
+        </div>
+        <p id="actionMsg" class="action-msg"></p>
+      </section>
+
+      <section class="panel stream">
+        <div class="panel-header">
+          <div class="panel-title">Live Feed</div>
+          <div class="pill" id="runningPill">Offline</div>
+        </div>
+        <div class="video-wrap">
+          <img id="videoFeed" src="/video_feed" alt="Live stream" />
+        </div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span>FPS</span>
+            <strong id="fpsValue">0.0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Tracks</span>
+            <strong id="tracksValue">0</strong>
+          </div>
+          <div class="stat-card">
+            <span>Last Plate</span>
+            <strong id="plateValue">UNKNOWN</strong>
+          </div>
+          <div class="stat-card">
+            <span>Frames</span>
+            <strong id="frameValue">0</strong>
+          </div>
+        </div>
+        <p id="errorMsg" class="error-msg"></p>
+      </section>
+
+      <section class="panel challans">
+        <div class="panel-header">
+          <div class="panel-title">Recent Challans</div>
+          <div class="hint">Auto-refresh every 2s</div>
+        </div>
+        <div class="challan-list" id="challanList"></div>
+      </section>
+    </main>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const actionMsg = document.getElementById("actionMsg");
+      const runningPill = document.getElementById("runningPill");
+      const fpsValue = document.getElementById("fpsValue");
+      const tracksValue = document.getElementById("tracksValue");
+      const plateValue = document.getElementById("plateValue");
+      const frameValue = document.getElementById("frameValue");
+      const errorMsg = document.getElementById("errorMsg");
+      const challanList = document.getElementById("challanList");
+
+      async function callApi(path, method = "GET", body = null) {
+        const res = await fetch(path, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: body ? JSON.stringify(body) : null,
+        });
+        return res.json();
+      }
+
+      startBtn.addEventListener("click", async () => {
+        const cameraIndex = Number(document.getElementById("cameraIndex").value || 0);
+        const data = await callApi("/api/start", "POST", { camera_index: cameraIndex });
+        actionMsg.textContent = data.message || "Started";
+      });
+
+      stopBtn.addEventListener("click", async () => {
+        const data = await callApi("/api/stop", "POST");
+        actionMsg.textContent = data.message || "Stopped";
+      });
+
+      function renderChallans(items) {
+        if (!items.length) {
+          challanList.innerHTML = '<p class="hint">No challans yet.</p>';
+          return;
+        }
+
+        challanList.innerHTML = items
+          .map(
+            (item) =>
+              `<a class="challan-item" href="${item.url}" target="_blank" rel="noreferrer">
+                <span>${item.name}</span>
+                <small>${item.modified}</small>
+              </a>`
+          )
+          .join("");
+      }
+
+      async function refreshStatus() {
+        try {
+          const status = await callApi("/api/status");
+          runningPill.textContent = status.running ? "Online" : "Offline";
+          runningPill.classList.toggle("online", Boolean(status.running));
+
+          fpsValue.textContent = Number(status.fps || 0).toFixed(1);
+          tracksValue.textContent = String(status.active_tracks || 0);
+          plateValue.textContent = status.last_plate || "UNKNOWN";
+          frameValue.textContent = String(status.frame_index || 0);
+          errorMsg.textContent = status.error || "";
+
+          if (status.last_challan) {
+            actionMsg.textContent = `New challan generated: ${status.last_challan}`;
+          }
+        } catch (err) {
+          errorMsg.textContent = "Status API unavailable.";
+        }
+      }
+
+      async function refreshChallans() {
+        try {
+          const data = await callApi("/api/challans");
+          renderChallans(data.items || []);
+        } catch (err) {
+          challanList.innerHTML = '<p class="hint">Unable to load challans.</p>';
+        }
+      }
+
+      refreshStatus();
+      refreshChallans();
+      setInterval(refreshStatus, 2000);
+      setInterval(refreshChallans, 2000);
+    </script>
+  </body>
+</html>

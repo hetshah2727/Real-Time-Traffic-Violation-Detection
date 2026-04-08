@@ -1,0 +1,298 @@
+:root {
+  --bg-1: #f8efe0;
+  --bg-2: #ffe3c2;
+  --ink: #1f2a33;
+  --card: rgba(255, 255, 255, 0.78);
+  --line: rgba(31, 42, 51, 0.14);
+  --accent: #ff6b35;
+  --accent-2: #0f766e;
+  --danger: #b42318;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Sora", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background: radial-gradient(circle at 12% 15%, #fff4e3 0%, transparent 38%),
+    radial-gradient(circle at 85% 0%, #ffe1c5 0%, transparent 35%),
+    linear-gradient(155deg, var(--bg-1), var(--bg-2));
+}
+
+.page-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(31, 42, 51, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31, 42, 51, 0.03) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.layout {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, calc(100vw - 32px));
+  margin: 16px auto 28px;
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  grid-template-areas:
+    "hero hero"
+    "controls stream"
+    "challans stream";
+}
+
+.hero {
+  grid-area: hero;
+  padding: 20px 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.55));
+  backdrop-filter: blur(8px);
+  animation: fade-slide 480ms ease;
+}
+
+.hero h1 {
+  margin: 4px 0;
+  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.hero-tag {
+  margin: 0;
+  color: var(--accent-2);
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.hero-sub {
+  margin: 6px 0 0;
+  opacity: 0.9;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 14px 26px rgba(31, 42, 51, 0.07);
+  padding: 16px;
+  animation: fade-slide 520ms ease;
+  overflow: hidden;
+}
+
+.controls {
+  grid-area: controls;
+}
+
+.stream {
+  grid-area: stream;
+  min-width: 0;
+}
+
+.challans {
+  grid-area: challans;
+}
+
+.panel-title {
+  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.control-row {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.actions {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #ff8a3d);
+  color: #fff;
+}
+
+.btn-ghost {
+  background: rgba(31, 42, 51, 0.08);
+  color: var(--ink);
+}
+
+.action-msg {
+  margin: 10px 0 0;
+  min-height: 18px;
+  font-size: 0.84rem;
+}
+
+.video-wrap {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #111;
+}
+
+.video-wrap img {
+  width: 100%;
+  display: block;
+}
+
+.pill {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(180, 35, 24, 0.14);
+  color: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pill.online {
+  background: rgba(15, 118, 110, 0.16);
+  color: var(--accent-2);
+}
+
+.stat-grid {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.stat-card {
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.68);
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.stat-card span {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.stat-card strong {
+  font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+  font-size: 0.95rem;
+}
+
+.error-msg {
+  min-height: 18px;
+  margin-top: 8px;
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
+.hint {
+  font-size: 0.78rem;
+  opacity: 0.7;
+}
+
+.challan-list {
+  display: grid;
+  gap: 8px;
+}
+
+.challan-item {
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 10px;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  overflow: hidden;
+}
+
+.challan-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(31, 42, 51, 0.12);
+}
+
+.challan-item small {
+  opacity: 0.7;
+  text-align: right;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.challan-item span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes fade-slide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 980px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "hero"
+      "controls"
+      "stream"
+      "challans";
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

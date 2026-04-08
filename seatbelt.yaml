@@ -1,0 +1,5 @@
+train: Dataset/Seat_Belt_general/train/images
+val: Dataset/Seat_Belt_general/valid/images
+
+nc: 2
+names: ["with_seatbelt", "without_seatbelt"]
